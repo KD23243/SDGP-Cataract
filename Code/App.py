@@ -38,7 +38,7 @@ def open_file():
       ml_Model(imagePath)
 
 def open_camera():
-    camera = cv2.VideoCapture(1)
+    camera = cv2.VideoCapture(0)
     while True:
         return_value, image = camera.read()
         gray = cv2.cvtColor(image, cv2.COLOR_BGR2GRAY)
