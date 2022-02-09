@@ -4,8 +4,9 @@ from PIL import ImageTk, Image
 import os
 import cv2
 
+print("Log: Programme Initialized")
 def ml_Model(imagePath):
-    cascPath = "model.xml"
+    cascPath = "model/model.xml"
     pedsCascade = cv2.CascadeClassifier(cascPath)
     image = cv2.imread(imagePath)
     gray = cv2.cvtColor(image, cv2.COLOR_BGR2GRAY)
@@ -18,11 +19,12 @@ def ml_Model(imagePath):
 
     prediction = format(len(catarat))
     if prediction == "0":
-        output.config(text="Normal",font=(25))
+        predictor.destroy()
+        os.system('python FoundCataract.py')
+        print("Log: Cataract Stage Predicted - Healthy")
     else:
-        output.config(text="Found Cataract",font=(25))
+        print("Log: Cataract Stage Predicted - Cataract")
 
-    output.pack()
 
     for (x, y, w, h) in catarat:
         cv2.rectangle(image, (x, y), (x + w, y + h), (0, 255, 0), 2)
@@ -32,13 +34,15 @@ def ml_Model(imagePath):
 
 def open_file():
    file = filedialog.askopenfile(mode='r', filetypes=[('Image Files', '*.jpg'),('Image Files', '*.png')])
+   print("Log: Image Uploaded")
    if file:
       filepath = os.path.abspath(file.name)
       imagePath = filepath
       ml_Model(imagePath)
 
 def open_camera():
-    camera = cv2.VideoCapture(0)
+    camera = cv2.VideoCapture(0, cv2.CAP_DSHOW)
+    print("Log: Launched Camera")
     while True:
         return_value, image = camera.read()
         gray = cv2.cvtColor(image, cv2.COLOR_BGR2GRAY)
@@ -61,29 +65,26 @@ def open_camera():
     camera.release()
     cv2.destroyAllWindows()
     imagePath = os.path.abspath("results/cameraCapture.jpg")
+    print("Log: Image Captured")
     ml_Model(imagePath)
 
-root = Tk()
-root.title(" Cataract Detector")
-root.geometry("375x812")
-root.resizable(False, False)
-root.iconbitmap('imageData/icon.ico')
+predictor = Tk()
+predictor.geometry('724x516')
+predictor.title(" Prediction Page")
+predictor.resizable(False, False)
+predictor.iconbitmap("imageData/icon.ico")
 
-
-logoImg = ImageTk.PhotoImage(Image.open("imageData/mainLogo.png"))
-label = Label(root, image=logoImg)
+bg = ImageTk.PhotoImage(Image.open("imageData/predictionbg.png"))
+label = Label(predictor, image=bg)
 label.pack()
 
-output = Label(root)
+cameraButton = ImageTk.PhotoImage(Image.open("imageData/camera.png"))
+uploadButton = ImageTk.PhotoImage(Image.open("imageData/gallery.png"))
 
-uploadButton = ImageTk.PhotoImage(Image.open("imageData/uploadButton.png"))
-cameraButton = ImageTk.PhotoImage(Image.open("imageData/cameraButton.png"))
+camera_Button1 = Button(predictor, text='Camera', image = cameraButton, borderwidth=0, bd=0,highlightthickness=0, command = open_camera )
+camera_Button1.place(x=399, y=284)
 
-upload_Button1 = Button(root, text='Upload', image = uploadButton, borderwidth=0, command=open_file)
-upload_Button1.place(x=10, y=650)
+upload_Button1 = Button(predictor, text='Upload', image = uploadButton, borderwidth=0, bd=0,highlightthickness=0, command = open_file )
+upload_Button1.place(x=399, y=347)
 
-
-upload_Button2 = Button(root, text='Upload', image = cameraButton, borderwidth=0, command=open_camera)
-upload_Button2.place(x=10, y=520)
-
-root.mainloop()
+predictor.mainloop()
