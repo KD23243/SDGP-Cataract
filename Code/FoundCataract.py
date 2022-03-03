@@ -26,5 +26,3 @@ logout = ImageTk.PhotoImage(Image.open("imageData/logout.png"))
 logoutbtn = Button(found, image = logout,command=destroy, borderwidth=0, bd=0,highlightthickness=0 ).place(x=423, y=366)
 
 found.mainloop()
-
-//asdasd
