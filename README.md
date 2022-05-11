@@ -2,8 +2,6 @@
 
 The SDGP project for the team BlackLight (CS-09).
 
-
-
 # Installation
 
 ## Prerequisites
